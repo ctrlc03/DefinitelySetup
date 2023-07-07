@@ -27,4 +27,4 @@ jobs:
       run: npm install -g @ctrlc03/phase2cli
 
     - name: Run tool
-      run: phase2cli coordinate:setup --template ./ceremonies/example/p0tionConfig.json
+      run: phase2cli coordinate setup --template ./ceremonies/example/p0tionConfig.json
