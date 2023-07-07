@@ -21,7 +21,7 @@ jobs:
     - name: Write secret to config
       run: |
         mkdir -p ~/.config/@ctrlc03/phase2cli-nodejs/
-        echo "${{ secrets.ACCESS_TOKEN }}" > ~/.config/@ctrlc03/phase2cli-nodejs/config.json
+        echo '{ "accessToken": "${{ secrets.ACCESS_TOKEN }}" }'' > ~/.config/@ctrlc03/phase2cli-nodejs/config.json
 
     - name: Install global package
       run: npm install -g @ctrlc03/phase2cli
