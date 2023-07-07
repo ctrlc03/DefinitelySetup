@@ -20,8 +20,8 @@ jobs:
 
     - name: Write secret to config
       run: |
-        mkdir -p ~/.config/@p0tion
-        echo "${{ secrets.ACCESS_TOKEN }}" > ~/.config/@p0tion/phase2cli-nodejs/config.json
+        mkdir -p ~/.config/@ctrlc03/phase2cli-nodejs/
+        echo "${{ secrets.ACCESS_TOKEN }}" > ~/.config/@ctrlc03/phase2cli-nodejs/config.json
 
     - name: Install global package
       run: npm install -g @ctrlc03/phase2cli
