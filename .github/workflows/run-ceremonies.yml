@@ -10,10 +10,6 @@ jobs:
   setup:
     runs-on: ubuntu-latest
 
-    environment: 
-      name: production
-      url: ${{ secrets.access_token }}
-
     steps:
     - uses: actions/checkout@v2
     
@@ -25,7 +21,7 @@ jobs:
     - name: Write secret to config
       run: |
         mkdir -p ~/.config/@p0tion
-        echo ${{ secrets.access_token }} > ~/.config/@p0tion/phase2cli-nodejs/config.json
+        echo "${{ secrets.ACCESS_TOKEN }}" > ~/.config/@p0tion/phase2cli-nodejs/config.json
 
     - name: Install global package
       run: npm install -g @ctrlc03/phase2cli
