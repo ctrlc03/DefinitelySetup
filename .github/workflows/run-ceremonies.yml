@@ -1,0 +1,34 @@
+name: Setup ceremony
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ * ]
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+
+    environment: 
+      name: production
+      url: ${{ secrets.access_token }}
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+
+    - name: Write secret to config
+      run: |
+        mkdir -p ~/.config/@p0tion
+        echo ${{ secrets.access_token }} > ~/.config/@p0tion/phase2cli-nodejs/config.json
+
+    - name: Install global package
+      run: npm install -g @ctrlc03/phase2cli
+
+    - name: Run tool
+      run: phase2cli coordinate:setup --template ./ceremonies/example/p0tionConfig.json
