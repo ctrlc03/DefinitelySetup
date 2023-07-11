@@ -28,6 +28,7 @@ jobs:
     # write env to file
     - name: Write env locally
       run: |
+        echo "$env.GH_ENV"
         echo "${{ secrets[env.GH_ENV].PHASE2CLI_ENV_FILE }}" > ./.env
 
     # List ceremonies that have already been created
