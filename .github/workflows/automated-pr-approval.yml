@@ -3,7 +3,7 @@ name: Periodic Checks and Approval
 
 on:
   schedule:
-    - cron: '50 12 * * *'
+    - cron: '55 12 * * *'
 
 jobs:
   check:
