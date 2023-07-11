@@ -47,7 +47,10 @@ jobs:
     - name: Run p0tion and setup ceremony
       run: |
         IFS=',' read -ra EXISTING_CEREMONIES <<< $(cat existing_ceremonies.txt)
-        IFS=' ' read -ra ALL_CEREMONIES <<< $(cat dir_output.txt)
+        ALL_CEREMONIES=()
+        while IFS= read -r line; do
+            ALL_CEREMONIES+=("$line")
+        done < dir_output.txt
         echo "${ALL_CEREMONIES[@]}"
         echo "${EXISTING_CEREMONIES[@]}"
         for ceremony in "${ALL_CEREMONIES[@]}"; do
