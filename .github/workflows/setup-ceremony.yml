@@ -30,16 +30,31 @@ jobs:
       run: |
         echo "${{ secrets[env.GH_ENV].PHASE2CLI_ENV_FILE }}" > ./.env
 
-    # list the ceremonies that have been created already
-    - name: List ceremonies
+    # List ceremonies that have already been created
+    - name: List existing ceremonies
       id: list_ceremonies
       run: |
         echo "::set-output name=ceremonies::$(phase2cli list)"
 
+    # List all the ceremonies in ./ceremonies
+    - name: List all ceremonies
+      id: list_all_ceremonies
+      run: |
+        echo "::set-output name=all_ceremonies::$(ls -d ceremonies/* | cut -d'/' -f2)"
+
     # want to setup only ceremonies that have not been setup already
     - name: Run p0tion and setup ceremony
       run: |
-        IFS=',' read -ra CEREMONIES <<< "${{ steps.list_ceremonies.outputs.ceremonies }}"
-        for ceremony in "${CEREMONIES[@]}"; do
-            phase2cli coordinate setup --template "./ceremonies/$ceremony/p0tionConfig.json" --auth "${{ secrets[env.GH_ENV].ACCESS_TOKEN }}"
+        IFS=',' read -ra EXISTING_CEREMONIES <<< "${{ steps.list_ceremonies.outputs.ceremonies }}"
+        IFS=' ' read -ra ALL_CEREMONIES <<< "${{ steps.list_all_ceremonies.outputs.all_ceremonies }}"
+        for ceremony in "${ALL_CEREMONIES[@]}"; do
+            if [[ ! " ${EXISTING_CEREMONIES[@]} " =~ " ${ceremony} " ]]; then
+                phase2cli coordinate setup --template "./ceremonies/$ceremony/p0tionConfig.json" --auth "${{ secrets[env.GH_ENV].ACCESS_TOKEN }}"
+            fi
         done
+
+
+
+
+
+
