@@ -23,7 +23,7 @@ jobs:
 
     # install p0tion
     - name: Install p0tion globally
-      run: npm install -g @p0tion/phase2cli
+      run: npm install -g @ctrlc03/phase2cli
 
     # write env to file
     - name: Write env locally
@@ -34,19 +34,19 @@ jobs:
     - name: List existing ceremonies
       id: list_ceremonies
       run: |
-        echo "::set-output name=ceremonies::$(phase2cli list)"
+        echo "$(phase2cli list) >> $EXISTING_CEREMONIES"
 
     # List all the ceremonies in ./ceremonies
     - name: List all ceremonies
       id: list_all_ceremonies
       run: |
-        echo "::set-output name=all_ceremonies::$(ls -d ceremonies/* | cut -d'/' -f2)"
+        echo "$(ls -d ceremonies/* | cut -d'/' -f2) >> $DIR_OUTPUT"
 
     # want to setup only ceremonies that have not been setup already
     - name: Run p0tion and setup ceremony
       run: |
-        IFS=',' read -ra EXISTING_CEREMONIES <<< "${{ steps.list_ceremonies.outputs.ceremonies }}"
-        IFS=' ' read -ra ALL_CEREMONIES <<< "${{ steps.list_all_ceremonies.outputs.all_ceremonies }}"
+        IFS=',' read -ra EXISTING_CEREMONIES <<< "${{ $EXISTING_CEREMONIES }}"
+        IFS=' ' read -ra ALL_CEREMONIES <<< "${{ $DIR_OUTPUT }}"
         for ceremony in "${ALL_CEREMONIES[@]}"; do
             if [[ ! " ${EXISTING_CEREMONIES[@]} " =~ " ${ceremony} " ]]; then
                 phase2cli coordinate setup --template "./ceremonies/$ceremony/p0tionConfig.json" --auth "${{ secrets[env.GH_ENV].ACCESS_TOKEN }}"
