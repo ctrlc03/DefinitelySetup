@@ -37,16 +37,18 @@ jobs:
             exit 1
           fi
 
-          echo "There are three new files"
+          files=($(echo $changed_files | tr ',' '\n'))
+
+          echo "Files: ${files[@]}"
 
           r1cs_files=($(grep -E '\.r1cs$' <<< "${files[@]}"))
-          wasm_files=($(grep -E '\.wasm$' <<< "${files[@]}"))
-          json_files=($(grep -E 'p0tionConfig\.json$' <<< "${files[@]}"))
+          echo "R1CS Files: ${r1cs_files[@]}"
 
-          echo "Checking that there is one r1cs, one wasm, and one json file"
-          echo $r1cs_files
-          echo $wasm_files
-          echo $json_files
+          wasm_files=($(grep -E '\.wasm$' <<< "${files[@]}"))
+          echo "WASM Files: ${wasm_files[@]}"
+
+          json_files=($(grep -E 'p0tionConfig\.json$' <<< "${files[@]}"))
+          echo "JSON Files: ${json_files[@]}"
 
           if [[ ${#r1cs_files[@]} -ne 1 || ${#wasm_files[@]} -ne 1 || ${#json_files[@]} -ne 1 ]]; then
             echo "Invalid or missing circuit artifacts"
