@@ -1,0 +1,29 @@
+# Setup a new p0tion ceremony automatically when a new branch is created
+name: Ceremony Setup
+
+# the branch should be named "*-ceremony" e.g. project1-ceremony
+on:
+  push:
+    branches:
+      - '*-ceremony'
+
+jobs:
+  coordinate:
+    runs-on: ubuntu-latest
+
+     steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+
+    # store the env locally on the runner
+    - name: Write env locally
+      run: |
+        echo "${{ secrets.PHASE2CLI_ENV_FILE }}" > ./.env
+
+    # run setup using the 
+    - name: Setup ceremony using p0tion
+      run: phase2cli coordinate setup --template ./ceremonies/${{ github.ref_name }}/p0tionConfig.json --auth "${{ secrets.ACCESS_TOKEN }}"

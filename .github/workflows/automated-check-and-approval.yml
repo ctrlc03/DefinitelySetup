@@ -1,0 +1,46 @@
+# Run every Friday at 6PM (UTC)
+name: Periodic Checks and Approval
+
+on:
+  schedule:
+    - cron: '0 18 * * 5'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+
+    - name: Install p0tion
+      run: npm install -g @p0tion/phase2cli
+
+    - name: Approve PRs if all checks pass
+      run: |
+        prs=$(curl -H "Accept: application/vnd.github.v3+json" \
+                    -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                    https://api.github.com/repos/${{ github.repository }}/pulls?state=open | \
+              jq -r '.[] | select(.mergeable_state == "clean") | .number')
+        for pr in $prs
+        do
+          branch=$(curl -H "Accept: application/vnd.github.v3+json" \
+                        -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                        https://api.github.com/repos/${{ github.repository }}/pulls/$pr | \
+                  jq -r '.head.ref')
+          result=$(phase2cli verify --template ./ceremonies/$branch/p0tionConfig.json)
+          if [[ "$result" == "true" ]]; then
+            curl -X PUT \
+                 -H "Accept: application/vnd.github.v3+json" \
+                 -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                 https://api.github.com/repos/${{ github.repository }}/pulls/$pr/reviews \
+                 -d '{"event":"APPROVE"}'
+          fi
+        done
+      env:
+        GITHUB_TOKEN: ${{ secrets.your-token }}
