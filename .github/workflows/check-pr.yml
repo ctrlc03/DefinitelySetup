@@ -1,0 +1,49 @@
+# Validate that a PR only changed files in the ceremonies directory
+name: Check Ceremony
+
+# Wil only run on pull requests to a branch named "*-ceremony" e.g. project1-ceremony
+on:
+  pull_request:
+    branches:
+      - '*-ceremony'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    # we want to check that the correct files were added
+    # also check that no more than three files were added
+    - name: Check directory and files
+      run: |
+        changed_files=$(git diff --name-only ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }})
+        for file in $changed_files; do
+          if [[ $file == ceremonies/* ]]; then
+            project_name=${file#ceremonies/}
+            project_name=${project_name%%/*}
+            if [[ ! -d "ceremonies/$project_name" ]]; then
+              echo "Directory ceremonies/$project_name does not exist"
+              exit 1
+            fi
+            if [[ ! -f "ceremonies/$project_name/$project_name.r1cs" ]]; then
+              echo "File ceremonies/$project_name/$project_name.r1cs does not exist"
+              exit 1
+            fi
+            if [[ ! -f "ceremonies/$project_name/$project_name.wasm" ]]; then
+              echo "File ceremonies/$project_name/$project_name.wasm does not exist"
+              exit 1
+            fi
+            if [[ ! -f "ceremonies/$project_name/p0tionConfig.json" ]]; then
+              echo "File ceremonies/$project_name/p0tionConfig.json does not exist"
+              exit 1
+            fi
+            file_count=$(ls ceremonies/$project_name | wc -l)
+            if [[ $file_count -ne 3 ]]; then
+              echo "Unexpected files in ceremonies/$project_name"
+              exit 1
+            fi
+          fi
+        done
