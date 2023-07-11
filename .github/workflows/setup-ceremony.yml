@@ -33,21 +33,19 @@ jobs:
     - name: List existing ceremonies
       id: list_ceremonies
       run: |
-        phase2cli list >> $EXISTING_CEREMONIES
-        echo $EXISTING_CEREMONIES
+        echo "$(phase2cli list)" > existing_ceremonies.txt
 
     # List all the ceremonies in ./ceremonies
     - name: List all ceremonies
       id: list_all_ceremonies
       run: |
-        ls -d ceremonies/* | cut -d'/' -f2 >> $DIR_OUTPUT
-        echo $DIR_OUTPUT
+        echo "$(ls -d ceremonies/* | cut -d'/' -f2)" > dir_output.txt
 
     # want to setup only ceremonies that have not been setup already
     - name: Run p0tion and setup ceremony
       run: |
-        IFS=',' read -ra EXISTING_CEREMONIES <<< $EXISTING_CEREMONIES
-        IFS=' ' read -ra ALL_CEREMONIES <<< $DIR_OUTPUT
+        IFS=',' read -ra EXISTING_CEREMONIES <<< $(cat existing_ceremonies.txt)
+        IFS=' ' read -ra ALL_CEREMONIES <<< $(cat dir_output.txt)
         for ceremony in "${ALL_CEREMONIES[@]}"; do
             if [[ ! " ${EXISTING_CEREMONIES[@]} " =~ " ${ceremony} " ]]; then
                 phase2cli coordinate setup --template "./ceremonies/$ceremony/p0tionConfig.json" --auth "${{ secrets.ACCESS_TOKEN }}"
