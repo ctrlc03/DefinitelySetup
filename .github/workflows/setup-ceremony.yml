@@ -1,0 +1,45 @@
+name: Setup ceremony
+
+# this will only run on pushes to main/staing/dev
+on:
+  push:
+    branches: [ main, staging, dev ]
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    env:
+      GH_ENV: ${{ (github.ref == 'refs/heads/main' && 'p0tion-production') ||
+                   (github.ref == 'refs/heads/staging' && 'p0tion-staging') ||
+                   (github.ref == 'refs/heads/dev' && 'p0tion-development') }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+
+    # install p0tion
+    - name: Install p0tion globally
+      run: npm install -g @p0tion/phase2cli
+
+    # write env to file
+    - name: Write env locally
+      run: |
+        echo "${{ secrets[env.GH_ENV].PHASE2CLI_ENV_FILE }}" > ./.env
+
+    # list the ceremonies that have been created already
+    - name: List ceremonies
+      id: list_ceremonies
+      run: |
+        echo "::set-output name=ceremonies::$(phase2cli list)"
+
+    # want to setup only ceremonies that have not been setup already
+    - name: Run p0tion and setup ceremony
+      run: |
+        IFS=',' read -ra CEREMONIES <<< "${{ steps.list_ceremonies.outputs.ceremonies }}"
+        for ceremony in "${CEREMONIES[@]}"; do
+            phase2cli coordinate setup --template "./ceremonies/$ceremony/p0tionConfig.json" --auth "${{ secrets[env.GH_ENV].ACCESS_TOKEN }}"
+        done
