@@ -46,8 +46,11 @@ jobs:
             exit 1
           fi
 
-          directory_name="ceremonies/$(echo $GITHUB_HEAD_REF | sed -r 's/-ceremony$//')"
+          echo "Ceremony artifacts are found"
 
+          directory_name="./ceremonies/$(echo $GITHUB_HEAD_REF | sed -r 's/-ceremony$//')"
+
+          echo "Checking that all files are inside $directory_name"
           for file in "${files[@]}"; do
             if [[ ! $file =~ ^$directory_name/ ]]; then
               echo "Files must be inside the $directory_name directory"
