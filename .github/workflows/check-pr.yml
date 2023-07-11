@@ -31,7 +31,7 @@ jobs:
           IFS=', ' read -r -a files <<< "$changed_files"
           
           if [[ ${#files[@]} -ne 3 ]]; then
-            echo "More than 3 files have been changed"
+            echo "The PR should have 3 files changed only"
             exit 1
           fi
 
@@ -40,7 +40,7 @@ jobs:
           json_files=($(grep -E 'p0tionConfig\.json$' <<< "${files[@]}"))
 
           if [[ ${#r1cs_files[@]} -ne 1 || ${#wasm_files[@]} -ne 1 || ${#json_files[@]} -ne 1 ]]; then
-            echo "Invalid or missing file extensions"
+            echo "Invalid or missing circuit artifacts"
             exit 1
           fi
 
