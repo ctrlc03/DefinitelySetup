@@ -45,8 +45,8 @@ jobs:
     # want to setup only ceremonies that have not been setup already
     - name: Run p0tion and setup ceremony
       run: |
-        IFS=',' read -ra EXISTING_CEREMONIES <<< "${{ $EXISTING_CEREMONIES }}"
-        IFS=' ' read -ra ALL_CEREMONIES <<< "${{ $DIR_OUTPUT }}"
+        IFS=',' read -ra EXISTING_CEREMONIES <<< $EXISTING_CEREMONIES
+        IFS=' ' read -ra ALL_CEREMONIES <<< $DIR_OUTPUT
         for ceremony in "${ALL_CEREMONIES[@]}"; do
             if [[ ! " ${EXISTING_CEREMONIES[@]} " =~ " ${ceremony} " ]]; then
                 phase2cli coordinate setup --template "./ceremonies/$ceremony/p0tionConfig.json" --auth "${{ secrets[env.GH_ENV].ACCESS_TOKEN }}"
