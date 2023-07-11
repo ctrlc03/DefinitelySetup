@@ -26,7 +26,7 @@ jobs:
 
     - name: Transform and compare
       run: |
-        prefix=$(echo "${TITLE}" | tr -dc '[:alnum:]' | tr '[:upper:]' '[:lower:]')
+        prefix=$(echo "${TITLE}" | tr -dc '[:alnum:]-\n\r' | tr '[:upper:]' '[:lower:]' | tr " " "-")
         echo "Converted Prefix: $prefix"
         if [ "$prefix" != "${GITHUB_HEAD_REF}" ]; then
           echo "Error: The ceremony artifacts directory name and ceremony prefix do not match!"
