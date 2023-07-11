@@ -1,11 +1,9 @@
 # Validate that a PR only changed files in the ceremonies directory
 name: Check Ceremony
 
-# Wil only run on pull requests to a branch named "*-ceremony" e.g. project1-ceremony
+# runs on PRs
 on:
-  pull_request:
-    branches:
-      - '*-ceremony'
+  pull_request
 
 jobs:
   check:
