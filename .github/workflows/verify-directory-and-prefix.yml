@@ -1,0 +1,36 @@
+name: Verify Directory name and prefix
+
+on: 
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+
+    - name: Install jq
+      run: sudo apt-get install jq -y
+
+    - name: Read JSON and get title
+      run: |
+        title=$(jq -r '.title' ./ceremonies/$(echo $GITHUB_HEAD_REF | sed -r 's/-ceremony$//')/p0tionConfig.json)
+        echo "Title: $title"
+        echo "TITLE=$title" >> $GITHUB_ENV
+
+    - name: Transform and compare
+      run: |
+        prefix=$(echo "${TITLE}" | tr -dc '[:alnum:]' | tr '[:upper:]' '[:lower:]')
+        echo "Converted Prefix: $prefix"
+        if [ "$prefix" != "${GITHUB_HEAD_REF}" ]; then
+          echo "Error: The ceremony artifacts directory name and ceremony prefix do not match!"
+          exit 1
+        else
+          echo "Directory name and ceremony prefix match."
+        fi
