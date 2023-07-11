@@ -25,9 +25,8 @@ jobs:
       # we want to validate that the p0tionConfig.json file is valid
       - name: Run npm script and check output
         run: |
-          branch=$(echo $GITHUB_HEAD_REF | sed 's/-ceremony//')
-          echo "Branch $branch"
-          result=$(phase2cli validate --template ./ceremonies/$branch/p0tionConfig.json)
+          echo $GITHUB_HEAD_REF
+          result=$(phase2cli validate --template ./ceremonies/$GITHUB_HEAD_REF/p0tionConfig.json)
           if [[ "$result" != "true" ]]; then
             echo "NPM script returned false."
             exit 1
