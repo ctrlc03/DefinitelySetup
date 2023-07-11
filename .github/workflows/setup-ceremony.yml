@@ -33,13 +33,15 @@ jobs:
     - name: List existing ceremonies
       id: list_ceremonies
       run: |
-        echo "$(phase2cli list) >> $EXISTING_CEREMONIES"
+        phase2cli list >> $EXISTING_CEREMONIES
+        echo $EXISTING_CEREMONIES
 
     # List all the ceremonies in ./ceremonies
     - name: List all ceremonies
       id: list_all_ceremonies
       run: |
-        echo "$(ls -d ceremonies/* | cut -d'/' -f2) >> $DIR_OUTPUT"
+        ls -d ceremonies/* | cut -d'/' -f2 >> $DIR_OUTPUT
+        echo $DIR_OUTPUT
 
     # want to setup only ceremonies that have not been setup already
     - name: Run p0tion and setup ceremony
