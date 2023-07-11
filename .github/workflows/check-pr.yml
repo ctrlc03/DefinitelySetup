@@ -29,6 +29,8 @@ jobs:
         run: |
           changed_files="${{ steps.get-changed-files.outputs.all }}"
           IFS=', ' read -r -a files <<< "$changed_files"
+
+          echo $GITHUB_HEAD_REF | sed -r 's/-ceremony$//'
           
           if [[ ${#files[@]} -ne 3 ]]; then
             echo "The PR should have 3 files changed only"
