@@ -19,7 +19,7 @@ jobs:
         node-version: '16'
 
     - name: Install p0tion
-      run: npm install -g @ctrlc03/phase2cli
+      run: npm install -g @p0tion/phase2cli
 
     - name: Approve and Merge PRs if all checks pass
       run: |
