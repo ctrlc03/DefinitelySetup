@@ -46,8 +46,8 @@ jobs:
       run: |
         IFS=',' read -ra EXISTING_CEREMONIES <<< $(cat existing_ceremonies.txt)
         IFS=' ' read -ra ALL_CEREMONIES <<< $(cat dir_output.txt)
-        echo ALL_CEREMONIES[@]
-        echo EXISTING_CEREMONIES[@]
+        echo "${ALL_CEREMONIES[@]}"
+        echo "${EXISTING_CEREMONIES[@]}"
         for ceremony in "${ALL_CEREMONIES[@]}"; do
             if [[ ! " ${EXISTING_CEREMONIES[@]} " =~ " ${ceremony} " ]]; then
                 phase2cli coordinate setup --template "./ceremonies/$ceremony/p0tionConfig.json" --auth "${{ secrets.ACCESS_TOKEN }}"
