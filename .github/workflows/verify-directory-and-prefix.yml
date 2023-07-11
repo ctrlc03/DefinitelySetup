@@ -28,8 +28,9 @@ jobs:
       run: |
         prefix=$(echo "${TITLE}" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -dc '[:alnum:]-\n\r')
         echo "Converted Prefix: $prefix"
-        echo "$GITHUB_HEAD_REF | sed -r 's/-ceremony$//'"
-        if [ "$prefix" != "$(echo $GITHUB_HEAD_REF | sed -r 's/-ceremony$//'))" ]; then
+        DIR_NAME="$(echo $GITHUB_HEAD_REF | sed -r 's/-ceremony$//'))"
+        echo "Dir name: $DIR_NAME"
+        if [ "$prefix" != $DIR_NAME ]; then
           echo "Error: The ceremony artifacts directory name and ceremony prefix do not match!"
           exit 1
         else
