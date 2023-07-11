@@ -20,7 +20,7 @@ jobs:
           node-version: '16'
 
       - name: Install p0tion
-        run: npm install -g @p0tion/phase2cli
+        run: npm install -g @ctrlc03/phase2cli
 
       # we want to validate that the p0tionConfig.json file is valid
       - name: Run npm script and check output
