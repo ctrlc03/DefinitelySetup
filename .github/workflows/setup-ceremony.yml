@@ -1,6 +1,6 @@
 name: Setup ceremony
 
-# this will only run on pushes to main/staing/dev
+# this will only run on pushes to main/staging/dev
 on:
   push:
     branches: [ main, staging, dev ]
@@ -8,10 +8,19 @@ on:
 jobs:
   setup:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        env: ['main', 'staging', 'dev']
+        include:
+          - env: 'main'
+            env_name: 'p0tion-production'
+          - env: 'staging'
+            env_name: 'p0tion-staging'
+          - env: 'dev'
+            env_name: 'p0tion-development'
+    if: github.ref == 'refs/heads/${{ matrix.env }}'
     env:
-      GH_ENV: ${{ (github.ref == 'refs/heads/main' && 'p0tion-production') ||
-                   (github.ref == 'refs/heads/staging' && 'p0tion-staging') ||
-                   (github.ref == 'refs/heads/dev' && 'p0tion-development') }}
+      GH_ENV: ${{ matrix.env_name }}
 
     steps:
     - uses: actions/checkout@v2
@@ -28,33 +37,27 @@ jobs:
     # write env to file
     - name: Write env locally
       run: |
-        echo "${{ secrets[env.GH_ENV].PHASE2CLI_ENV_FILE }}" > ./.env
+        echo "${{ secrets[matrix.env_name].PHASE2CLI_ENV_FILE }}" > ./.env
 
     # List ceremonies that have already been created
     - name: List existing ceremonies
       id: list_ceremonies
       run: |
-        echo "$(phase2cli list) >> $EXISTING_CEREMONIES"
+        echo "$(phase2cli list)" >> existing_ceremonies.txt
 
     # List all the ceremonies in ./ceremonies
     - name: List all ceremonies
       id: list_all_ceremonies
       run: |
-        echo "$(ls -d ceremonies/* | cut -d'/' -f2) >> $DIR_OUTPUT"
+        echo "$(ls -d ceremonies/* | cut -d'/' -f2)" >> dir_output.txt
 
     # want to setup only ceremonies that have not been setup already
     - name: Run p0tion and setup ceremony
       run: |
-        IFS=',' read -ra EXISTING_CEREMONIES <<< $EXISTING_CEREMONIES
-        IFS=' ' read -ra ALL_CEREMONIES <<< $DIR_OUTPUT
+        IFS=',' read -ra EXISTING_CEREMONIES <<< $(cat existing_ceremonies.txt)
+        IFS=' ' read -ra ALL_CEREMONIES <<< $(cat dir_output.txt)
         for ceremony in "${ALL_CEREMONIES[@]}"; do
             if [[ ! " ${EXISTING_CEREMONIES[@]} " =~ " ${ceremony} " ]]; then
-                phase2cli coordinate setup --template "./ceremonies/$ceremony/p0tionConfig.json" --auth "${{ secrets[env.GH_ENV].ACCESS_TOKEN }}"
+                phase2cli coordinate setup --template "./ceremonies/$ceremony/p0tionConfig.json" --auth "${{ secrets[matrix.env_name].ACCESS_TOKEN }}"
             fi
         done
-
-
-
-
-
-
