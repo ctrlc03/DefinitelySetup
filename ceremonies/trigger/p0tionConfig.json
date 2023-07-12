@@ -1,0 +1,59 @@
+{
+    "title": "trigger",
+    "description": "This is an example ceremony",
+    "startDate": "2023-08-07T00:00:00",
+    "endDate": "2023-09-10T00:00:00",
+    "timeoutMechanismType": "FIXED",
+    "penalty": 10,
+    "timeoutThreshold": 3600,
+    "fixed": true,
+    "threshold": 10,
+    "circuits": [
+        {
+            "description": "description",
+            "compiler": {
+                "version": "1.0",
+                "commitHash": "b7ad01b11f9b4195e38ecc772291251260ab2c67"
+            },
+            "template": {
+                "source": "https://github.com/circuit.circom",
+                "commitHash": "b7ad01b11f9b4195e38ecc772291251260ab2c67",
+                "paramConfiguration": [6,8,3,2]
+            },
+            "verification": {
+                "cfOrVm": "CF"
+            },
+            "artifacts": {
+                "r1csLocalFilePath": "./ceremonies/trigger/circuit.r1cs",
+                "wasmLocalFilePath": "./ceremonies/trigger/circuit.wasm"
+            },
+            "name": "circuit",
+            "dynamicThreshold": 0,
+            "fixedTimeWindow": 3600,
+            "sequencePosition": 1
+        },
+        {
+            "description": "description2",
+            "compiler": {
+                "version": "1.0",
+                "commitHash": "b7ad01b11f9b4195e38ecc772291251260ab2c67"
+            },
+            "template": {
+                "source": "https://github.com/circuit.circom",
+                "commitHash": "b7ad01b11f9b4195e38ecc772291251260ab2c67",
+                "paramConfiguration": [6,8,3,2]
+            },
+            "verification": {
+                "cfOrVm": "CF"
+            },
+            "artifacts": {
+                "r1csLocalFilePath": "./ceremonies/trigger/circuit2.r1cs",
+                "wasmLocalFilePath": "./ceremonies/trigger/circuit2.wasm"
+            },
+            "name": "circuit2",
+            "dynamicThreshold": 0,
+            "fixedTimeWindow": 3600,
+            "sequencePosition": 1
+        }
+    ]
+}
