@@ -1,6 +1,6 @@
 {
-  "title": "test QFI Ceremony",
-  "description": "This is an example QFI Ceremony",
+  "title": "Project Ceremony4",
+  "description": "This is an example ceremony",
   "startDate": "2023-08-07T00:00:00",
   "endDate": "2023-09-10T00:00:00",
   "timeoutMechanismType": "FIXED",
@@ -24,8 +24,8 @@
               "cfOrVm": "CF"
           },
           "artifacts": {
-              "r1csLocalFilePath": "./ceremonies/qfi/qfi.r1cs",
-              "wasmLocalFilePath": "./ceremonies/qfi/qfi.wasm"
+              "r1csLocalFilePath": "./ceremonies/project-ceremony4/circuit.r1cs",
+              "wasmLocalFilePath": "./ceremonies/project-ceremony4/circuit.wasm"
           },
           "name": "circuit",
           "dynamicThreshold": 0,
