@@ -50,7 +50,7 @@ jobs:
           for file in "${files[@]}"; do
             if [[ $file == *.r1cs ]]; then r1cs_files+=("$file")
             elif [[ $file == *.wasm ]]; then wasm_files+=("$file")
-            elif [[ $file == *p0tionConfig.json ]]; then json_files+=("$file")
+            elif [[ $file == p0tionConfig.json ]]; then json_files+=("$file")
             fi
           done
           
