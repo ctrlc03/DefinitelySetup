@@ -248,7 +248,6 @@ export const useInitialStateContext = () => {
 
       // 1. Fetch data.
       const docs = await getAllCollectionDocs(firestoreDatabase, `ceremonies`)
-
       // 2. Post-process data.
       const ceremonies: CeremonyDocumentReferenceAndData[] = docs.map((document: DocumentData) => { return { uid: document.id, data: document.data() } })
       const projects: Project[] = ceremonies.map((ceremony: CeremonyDocumentReferenceAndData) => { return { ceremony: ceremony } })
@@ -258,7 +257,7 @@ export const useInitialStateContext = () => {
     }
 
     fetchData()
-  })
+  }, [])
 
   return { projects, setProjects, search, setSearch, loading, setLoading };
 };
