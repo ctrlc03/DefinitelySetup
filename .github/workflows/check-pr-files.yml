@@ -15,9 +15,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Get PR number
-        run: echo "PR_NUMBER=$(jq --raw-output .number $GITHUB_EVENT_PATH)" >> $GITHUB_ENV
-
       - name: Get changed files
         id: get-changed-files
         uses: jitterbit/get-changed-files@v1
