@@ -159,8 +159,6 @@ jobs:
       - start-runner # required to get output from the start-runner job
       - setup-ceremonies # required to wait when the main job is done
     runs-on: ubuntu-latest
-    # required to stop the runner even if an error happened in the previous jobs
-    if: 
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
